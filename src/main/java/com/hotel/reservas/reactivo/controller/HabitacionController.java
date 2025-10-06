@@ -1,8 +1,11 @@
 package com.hotel.reservas.reactivo.controller;
 
 import com.hotel.reservas.reactivo.dto.Habitacion.HabitacionDto;
+import com.hotel.reservas.reactivo.dto.Habitacion.HabitacionFilterRequest;
 import com.hotel.reservas.reactivo.dto.Habitacion.HabitacionSaveDto;
 import com.hotel.reservas.reactivo.service.IHabitacionService;
+import com.hotel.reservas.reactivo.service.impl.HabitacionServiceImpl;
+import com.hotel.reservas.reactivo.shared.page.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,8 +26,8 @@ public class HabitacionController {
 
     @Operation(summary = "Obtener todas las habitaciones", description = "Devuelve un listado de habitaciones registradas")
     @GetMapping
-    public Mono<ResponseEntity<Flux<HabitacionDto>>> findAll() {
-        return Mono.just(ResponseEntity.ok(habitacionService.findAll()));
+    public Flux<HabitacionDto> findAll() {
+        return habitacionService.findAll();
     }
 
     @Operation(summary = "Obtener habitación por ID", description = "Busca una habitación en base a su identificador")
@@ -57,5 +60,28 @@ public class HabitacionController {
     public Mono<ResponseEntity<Void>> delete(@PathVariable Long id) {
         return habitacionService.delete(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
+    }
+
+    @GetMapping("paginated")
+    public Mono<ResponseEntity<PageResponse<HabitacionDto>>> getHabitaciones(
+            @RequestParam(required = false) String numero,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) Boolean disponible,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        HabitacionFilterRequest filter = new HabitacionFilterRequest(
+                numero,
+                tipo,
+                disponible,
+                page > 0 ? page - 1 : 0,   // evita negativos
+                size,
+                sortBy,
+                sortDir
+        );
+        return habitacionService.findHabitaciones(filter)
+                .map(ResponseEntity::ok);
     }
 }
