@@ -41,6 +41,8 @@ public class JwtAuthenticationFilter implements WebFilter {
         // Buscamos el UserDetails (reactivo) y, si existe, inyectamos el SecurityContext
         return userDetailsService.findByUsername(username)
                 .flatMap(userDetails -> {
+                    System.out.println("[JwtFilter] Usuario encontrado en BD: " + userDetails.getUsername());
+                    System.out.println(" [JwtFilter] Roles: " + userDetails.getAuthorities());
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     SecurityContextImpl securityContext = new SecurityContextImpl(authentication);

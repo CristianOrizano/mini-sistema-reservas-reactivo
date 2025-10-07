@@ -19,23 +19,25 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    // 🔑 Codificador de contraseñas
+    // Codificador de contraseñas
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 🧠 Authentication Manager reactivo
-    @Bean
+    // Authentication Manager reactivo
+    /*@Bean
     public ReactiveAuthenticationManager authenticationManager() {
         UserDetailsRepositoryReactiveAuthenticationManager authManager =
                 new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
         authManager.setPasswordEncoder(passwordEncoder());
         return authManager;
-    }
+    } */
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
@@ -52,6 +54,12 @@ public class SecurityConfig {
                         ).permitAll()
                         // Endpoints de autenticación públicos
                         .pathMatchers("/api/usuario/**", "/api/auth/login").permitAll()
+                        // GET: accesible por ADMIN y USER
+                        .pathMatchers(HttpMethod.GET, "/api/habitacion/**").hasAnyAuthority("ADMIN", "USER")
+                        // POST, PUT, DELETE: solo ADMIN
+                        .pathMatchers(HttpMethod.POST, "/api/habitacion/**").hasAuthority("ADMIN")
+                        .pathMatchers(HttpMethod.PUT, "/api/habitacion/**").hasAuthority("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/api/habitacion/**").hasAuthority("ADMIN")
                         // CORS preflight
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         // El resto requiere JWT
@@ -61,7 +69,4 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
-
-
-
 }

@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements ReactiveUserDetailsService {
                         rolRepository.findById(usuario.getRolId())
                                 .map(rol -> User.withUsername(usuario.getEmail())
                                         .password(usuario.getPassword())
-                                        .roles(rol.getNombre()) // Spring espera un nombre tipo “ADMIN”, no el ID
+                                        .authorities(rol.getNombre()) //  no agrega "ROLE_"
                                         .build()
                                 )
                 );

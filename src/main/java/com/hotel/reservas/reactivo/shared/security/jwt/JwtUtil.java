@@ -58,15 +58,15 @@ public class JwtUtil {
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("⚠️ Token expirado");
+            System.out.println(" Token expirado");
         } catch (UnsupportedJwtException e) {
-            System.out.println("⚠️ Token no soportado");
+            System.out.println(" Token no soportado");
         } catch (MalformedJwtException e) {
-            System.out.println("⚠️ Token mal formado");
+            System.out.println(" Token mal formado");
         } catch (SignatureException e) {
-            System.out.println("⚠️ Firma JWT inválida");
+            System.out.println(" Firma JWT invalida");
         } catch (IllegalArgumentException e) {
-            System.out.println("⚠️ Token vacío o inválido");
+            System.out.println(" Token vacío o invalido");
         }
         return false;
     }
