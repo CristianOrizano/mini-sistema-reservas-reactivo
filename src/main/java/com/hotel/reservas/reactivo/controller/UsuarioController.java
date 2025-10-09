@@ -8,6 +8,7 @@ import com.hotel.reservas.reactivo.service.IHabitacionService;
 import com.hotel.reservas.reactivo.service.IUsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class UsuarioController {
                 .map(ResponseEntity::ok); // Devuelve 200 OK si se encuentra
     }
 
-
+    @SecurityRequirements(value = {})
     @PostMapping
     public Mono<ResponseEntity<UsuarioDto>> create(@RequestBody UsuarioSaveDto usuarioSaveDto) {
         return usuarioService.create(usuarioSaveDto)

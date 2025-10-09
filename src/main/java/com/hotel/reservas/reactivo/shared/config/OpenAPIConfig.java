@@ -17,7 +17,7 @@ public class OpenAPIConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Hotel Reservas API")
-                        .description("API reactiva para gestión de habitaciones y categorías")
+                        .description("backend reactivo para gestión de reservas de hotel")
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Cristian Orizano")))

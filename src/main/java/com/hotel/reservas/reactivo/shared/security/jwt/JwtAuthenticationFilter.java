@@ -20,16 +20,14 @@ public class JwtAuthenticationFilter implements WebFilter {
     private final ReactiveUserDetailsService userDetailsService; // tu CustomUserDetailsService
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
+        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         // Si no hay header o no es Bearer, seguir sin autenticar
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println(">>>>> Token vacio o inválido");
             return chain.filter(exchange);
         }
 
         String token = authHeader.substring(7);
-
         // Validamos el token (validateToken debe atrapar excepciones y devolver boolean)
         if (!jwtUtil.validateToken(token)) {
             return chain.filter(exchange);
