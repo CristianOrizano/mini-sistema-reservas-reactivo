@@ -9,6 +9,7 @@ import com.hotel.reservas.reactivo.shared.page.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,13 +42,13 @@ public class HabitacionController {
 
 
     @PostMapping
-    public Mono<ResponseEntity<HabitacionDto>> create(@RequestBody HabitacionSaveDto habitacion) {
+    public Mono<ResponseEntity<HabitacionDto>> create(@Valid @RequestBody HabitacionSaveDto habitacion) {
         return habitacionService.create(habitacion)
                 .map(dto -> ResponseEntity.status(HttpStatus.CREATED).body(dto));
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<HabitacionDto>> update(@PathVariable("id") Long id,
+    public Mono<ResponseEntity<HabitacionDto>> update(@Valid @PathVariable("id") Long id,
                                                       @RequestBody HabitacionSaveDto habitacion) {
         return habitacionService.update(id, habitacion)
                 .map(dto -> ResponseEntity.ok(dto));

@@ -7,6 +7,7 @@ import com.hotel.reservas.reactivo.shared.security.jwt.JwtResponse;
 import com.hotel.reservas.reactivo.shared.security.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +29,7 @@ public class AuthController {
 
     // Login endpoint
     @PostMapping("/login")
-    public Mono<ResponseEntity<?>> login(@RequestBody LoginDto request) {
+    public Mono<ResponseEntity<?>> login(@Valid @RequestBody LoginDto request) {
         return usuarioRepository.findByEmail(request.getEmail())
                 .switchIfEmpty(Mono.error(new InvalidCredentialsException("Credenciales inválidas")))
                 .flatMap(usuario -> {
